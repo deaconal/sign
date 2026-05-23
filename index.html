@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Sign Generator</title>
+    <title>Deacon Al Sign Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <main class="container">
-        <h1>Sign Generator</h1>
+        <h1>Deacon Al Sign Generator</h1>
         
         <div class="controls">
             <div class="control-group">
@@ -32,6 +32,29 @@
                 <div class="control-group">
                     <label for="colorPicker">Text Color:</label>
                     <input type="color" id="colorPicker" value="#000000">
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSizeSlider">Font Size Scale:</label>
+                    <input type="range" id="fontSizeSlider" min="0.5" max="2.0" step="0.1" value="1.0">
+                </div>
+            </div>
+
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="bgSelect">Background:</label>
+                    <select id="bgSelect">
+                        <option value="white">White Background</option>
+                        <option value="transparent">Transparent Background</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="signSelect">Sign Material:</label>
+                    <select id="signSelect">
+                        <option value="white">White Sign</option>
+                        <option value="cardboard">Cardboard Sign</option>
+                    </select>
                 </div>
             </div>
 
