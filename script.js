@@ -1,51 +1,75 @@
 const canvas = document.getElementById('signCanvas');
 const ctx = canvas.getContext('2d');
 
+// UI Controls
 const textInput = document.getElementById('textInput');
 const fontSelect = document.getElementById('fontSelect');
 const colorPicker = document.getElementById('colorPicker');
+const fontSizeSlider = document.getElementById('fontSizeSlider');
+const bgSelect = document.getElementById('bgSelect');
+const signSelect = document.getElementById('signSelect');
 const downloadBtn = document.getElementById('downloadBtn');
 
 // --- ALIGNMENT CONFIGURATION ---
-// Tweak these percentages (decimals) to perfectly align the text on the sign.
-// 0.5 is 50% (the middle). 
 const ALIGNMENT_CONFIG = {
-    centerX: 0.50,      // X-axis center of the sign (50% of image width)
-    centerY: 0.34,      // Y-axis center of the sign (approx 34% down from top)
-    maxWidth: 0.40,     // Max width of the text block (40% of image width)
-    fontSize: 0.035,    // Font size relative to image height (3.5%)
-    lineHeight: 1.2     // Spacing between multiple lines of text
+    centerX: 0.50,      
+    centerY: 0.34,      
+    maxWidth: 0.40,     
+    baseFontSize: 0.035, // Base size (3.5% of image height)
+    lineHeight: 1.2     
+};
+
+// Image asset combinations mapping
+const IMAGE_MAP = {
+    'white_white': 'man_white_bg_white_sign.png',
+    'white_cardboard': 'man_white_bg_cardboard_sign.png',
+    'transparent_white': 'man_transparent_bg_white_sign.png',
+    'transparent_cardboard': 'man_transparent_bg_cardboard_sign.png'
 };
 
 const img = new Image();
-// Ensure the image file is in the same folder and named exactly like this
-img.src = 'Smiling Man holding sign.png'; 
 
+// Function to determine which image to load based on selectors
+function updateImageSource() {
+    const bgKey = bgSelect.value;     // 'white' or 'transparent'
+    const signKey = signSelect.value; // 'white' or 'cardboard'
+    const mapKey = `${bgKey}_${signKey}`;
+    
+    img.src = IMAGE_MAP[mapKey];
+}
+
+// When the newly selected image variant finishes loading, redraw everything
 img.onload = () => {
-    // Set canvas to the exact pixel dimensions of the uploaded image
     canvas.width = img.width;
     canvas.height = img.height;
     updateCanvas();
 };
 
-// Event listeners to redraw when user changes anything
+// Event listeners for UI updates
 textInput.addEventListener('input', updateCanvas);
 fontSelect.addEventListener('change', updateCanvas);
 colorPicker.addEventListener('change', updateCanvas);
+fontSizeSlider.addEventListener('input', updateCanvas);
+
+// Asset swapping listeners
+bgSelect.addEventListener('change', updateImageSource);
+signSelect.addEventListener('change', updateImageSource);
 
 function updateCanvas() {
-    // Clear and draw the base image
+    // Clear and draw the active base image variant
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0);
 
     const text = textInput.value;
-    if (!text) return; // Don't draw anything if input is empty
+    if (!text) return; 
 
-    // Calculate exact pixel values based on the config percentages
+    // Apply the font size slider multiplier to the base size calculation
+    const sizeMultiplier = parseFloat(fontSizeSlider.value);
+    const fontSize = canvas.height * ALIGNMENT_CONFIG.baseFontSize * sizeMultiplier;
+
     const x = canvas.width * ALIGNMENT_CONFIG.centerX;
     const y = canvas.height * ALIGNMENT_CONFIG.centerY;
     const maxTextWidth = canvas.width * ALIGNMENT_CONFIG.maxWidth;
-    const fontSize = canvas.height * ALIGNMENT_CONFIG.fontSize;
 
     // Set styling
     ctx.fillStyle = colorPicker.value;
@@ -53,13 +77,11 @@ function updateCanvas() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Draw the text with line wrapping
+    // Wrap and draw text
     wrapText(ctx, text, x, y, maxTextWidth, fontSize * ALIGNMENT_CONFIG.lineHeight);
 }
 
-// Function to handle multiline text so it doesn't spill off the sign
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
-    // Split by manual line breaks first
     const paragraphs = text.split('\n'); 
     let lines = [];
 
@@ -82,7 +104,6 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         lines.push(currentLine);
     }
 
-    // Calculate starting Y position so the whole block of text is vertically centered
     let totalHeight = lines.length * lineHeight;
     let startY = y - (totalHeight / 2) + (lineHeight / 2);
 
@@ -91,11 +112,13 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     }
 }
 
-// Handle the download
+// Handle image downloading
 downloadBtn.addEventListener('click', () => {
     const link = document.createElement('a');
-    link.download = 'custom-sign.png';
-    // Convert canvas to a high-res data URL
+    link.download = `custom-sign-${signSelect.value}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 });
+
+// Initialize the app with the starting image combination
+updateImageSource();
