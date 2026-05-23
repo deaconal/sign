@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Sign Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container">
+        <h1>Sign Generator</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="textInput">Sign Message:</label>
+                <textarea id="textInput" rows="3" placeholder="Enter your message here..."></textarea>
+            </div>
+            
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="fontSelect">Font:</label>
+                    <select id="fontSelect">
+                        <option value="Arial">Arial</option>
+                        <option value="Courier New">Courier</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Impact">Impact</option>
+                        <option value="Comic Sans MS">Comic Sans</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="colorPicker">Text Color:</label>
+                    <input type="color" id="colorPicker" value="#000000">
+                </div>
+            </div>
+
+            <button id="downloadBtn">Download Image</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="signCanvas"></canvas>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
