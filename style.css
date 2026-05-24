@@ -39,10 +39,13 @@ h1 {
     flex-direction: column;
     gap: 0.5rem;
     flex: 1;
+    min-width: 160px; /* Forces items to drop to the next line on small screens */
 }
 
 .control-row {
     display: flex;
+    flex-wrap: wrap; /* Allows the flex items to wrap to a new line */
+    justify-content: center; /* Centers the remaining items (like the sign material) */
     gap: 1rem;
 }
 
@@ -57,6 +60,7 @@ textarea, select, input[type="color"], input[type="range"] {
     border-radius: 6px;
     font-family: inherit;
     height: 38px;
+    width: 100%;
 }
 
 textarea {
@@ -74,6 +78,7 @@ button {
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s;
+    margin-top: 0.5rem;
 }
 
 button:hover {
@@ -86,7 +91,6 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    /* Checkered pattern to show transparency in preview */
     background-color: #333;
     background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), 
                       linear-gradient(-45deg, #ccc 25%, transparent 25%), 
