@@ -15,7 +15,7 @@ const ALIGNMENT_CONFIG = {
     centerX: 0.50,      
     centerY: 0.34,      
     maxWidth: 0.40,     
-    baseFontSize: 0.035, // Base size (3.5% of image height)
+    baseFontSize: 0.035, 
     lineHeight: 1.2     
 };
 
@@ -29,41 +29,36 @@ const IMAGE_MAP = {
 
 const img = new Image();
 
-// Function to determine which image to load based on selectors
 function updateImageSource() {
-    const bgKey = bgSelect.value;     // 'white' or 'transparent'
-    const signKey = signSelect.value; // 'white' or 'cardboard'
+    const bgKey = bgSelect.value;     
+    const signKey = signSelect.value; 
     const mapKey = `${bgKey}_${signKey}`;
     
     img.src = IMAGE_MAP[mapKey];
 }
 
-// When the newly selected image variant finishes loading, redraw everything
 img.onload = () => {
     canvas.width = img.width;
     canvas.height = img.height;
     updateCanvas();
 };
 
-// Event listeners for UI updates
 textInput.addEventListener('input', updateCanvas);
 fontSelect.addEventListener('change', updateCanvas);
 colorPicker.addEventListener('change', updateCanvas);
 fontSizeSlider.addEventListener('input', updateCanvas);
 
-// Asset swapping listeners
 bgSelect.addEventListener('change', updateImageSource);
 signSelect.addEventListener('change', updateImageSource);
 
 function updateCanvas() {
-    // Clear and draw the active base image variant
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0);
 
-    const text = textInput.value;
+    // .trim() removes the leading and trailing spaces that ruin the centering
+    const text = textInput.value.trim();
     if (!text) return; 
 
-    // Apply the font size slider multiplier to the base size calculation
     const sizeMultiplier = parseFloat(fontSizeSlider.value);
     const fontSize = canvas.height * ALIGNMENT_CONFIG.baseFontSize * sizeMultiplier;
 
@@ -71,13 +66,11 @@ function updateCanvas() {
     const y = canvas.height * ALIGNMENT_CONFIG.centerY;
     const maxTextWidth = canvas.width * ALIGNMENT_CONFIG.maxWidth;
 
-    // Set styling
     ctx.fillStyle = colorPicker.value;
     ctx.font = `bold ${fontSize}px ${fontSelect.value}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Wrap and draw text
     wrapText(ctx, text, x, y, maxTextWidth, fontSize * ALIGNMENT_CONFIG.lineHeight);
 }
 
@@ -95,13 +88,13 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
             let testWidth = metrics.width;
 
             if (testWidth > maxWidth && n > 0) {
-                lines.push(currentLine);
+                lines.push(currentLine.trim()); // Trim individual lines too
                 currentLine = words[n] + ' ';
             } else {
                 currentLine = testLine;
             }
         }
-        lines.push(currentLine);
+        lines.push(currentLine.trim());
     }
 
     let totalHeight = lines.length * lineHeight;
@@ -112,7 +105,6 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     }
 }
 
-// Handle image downloading
 downloadBtn.addEventListener('click', () => {
     const link = document.createElement('a');
     link.download = `custom-sign-${signSelect.value}.png`;
@@ -120,5 +112,4 @@ downloadBtn.addEventListener('click', () => {
     link.click();
 });
 
-// Initialize the app with the starting image combination
 updateImageSource();
