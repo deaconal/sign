@@ -9,6 +9,7 @@ const fontSizeSlider = document.getElementById('fontSizeSlider');
 const bgSelect = document.getElementById('bgSelect');
 const signSelect = document.getElementById('signSelect');
 const downloadBtn = document.getElementById('downloadBtn');
+const copyBtn = document.getElementById('copyBtn');
 
 // --- ALIGNMENT CONFIGURATION ---
 const ALIGNMENT_CONFIG = {
@@ -110,6 +111,37 @@ downloadBtn.addEventListener('click', () => {
     link.download = `custom-sign-${signSelect.value}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
+});
+
+copyBtn.addEventListener('click', async () => {
+    if (!navigator.clipboard || !window.ClipboardItem) {
+        alert('Clipboard copying is not supported in this browser.');
+        return;
+    }
+
+    try {
+        const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob((imageBlob) => {
+                if (imageBlob) {
+                    resolve(imageBlob);
+                } else {
+                    reject(new Error('Could not create image data.'));
+                }
+            }, 'image/png');
+        });
+
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+        ]);
+
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+            copyBtn.textContent = 'Copy Image';
+        }, 1500);
+    } catch (error) {
+        console.error('Failed to copy image:', error);
+        alert('Unable to copy the image to your clipboard.');
+    }
 });
 
 updateImageSource();
