@@ -2,71 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f5f3ec">
+    <meta name="description" content="Create and save custom Deacon Al signs.">
     <title>Deacon Al Sign Generator</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-
-    <main class="container">
-        <h1>Deacon Al Sign Generator</h1>
-        
-        <div class="controls">
-            <div class="control-group">
-                <label for="textInput">Sign Message:</label>
-                <textarea id="textInput" rows="3" placeholder="Enter your message here..."></textarea>
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+        <symbol id="icon-share" viewBox="0 0 24 24"><path d="M12 15V3m-4 4 4-4 4 4M7 10H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></symbol>
+        <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+        <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+        <symbol id="icon-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+        <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    </svg>
+    <div class="page-shell">
+        <main>
+            <h1 class="sr-only">Deacon Al Sign Generator</h1>
+            <div class="generator">
+                <div class="generator-bar">
+                    <div class="generator-picker"><label class="sr-only" for="characterSelect">Generator</label><div class="select-wrap character-select"><select id="characterSelect"><option value="deacon-al">Deacon Al sign generator</option><option value="brina">Brina sign generator</option></select><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg></div></div>
+                </div>
+                <section class="preview-panel" aria-label="Your image preview">
+                    <div class="canvas-stage" id="canvasStage" aria-busy="true">
+                        <canvas id="signCanvas" width="1086" height="1448" role="img" aria-label="Loading your sign preview"></canvas>
+                        <div id="previewStatus" class="preview-status" role="status">Loading preview…</div>
+                        <button id="retryBtn" class="button button-secondary retry-button" type="button" hidden>Try again</button>
+                        <button id="expandBtn" class="expand-button" type="button" aria-label="Enlarge preview" disabled><svg class="icon" aria-hidden="true"><use href="#icon-expand"/></svg></button>
+                    </div>
+                </section>
+                <section class="editor-panel" aria-label="Customize your image">
+                    <div class="message-section">
+                        <div class="field-heading"><label for="textInput">Message</label><button id="clearBtn" class="text-button" type="button">Clear</button></div>
+                        <textarea id="textInput" rows="3" maxlength="500" placeholder="Type your message…" aria-describedby="messageHint characterCount" spellcheck="true"></textarea>
+                        <div class="message-meta"><span id="messageHint" role="status"></span><span id="characterCount">0 / 500</span></div>
+                    </div>
+                    <details class="customization" id="customization">
+                        <summary><span>Options</span><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg></summary>
+                        <div class="customization-content">
+                            <div class="control-row">
+                                <div class="control-group" id="signGroup"><label for="signSelect">Sign material</label><div class="select-wrap"><select id="signSelect"><option value="white">White sign</option><option value="cardboard">Cardboard sign</option></select><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg></div></div>
+                                <div class="control-group" id="bubbleGroup" hidden><label for="bubbleSelect">Bubble size</label><div class="select-wrap"><select id="bubbleSelect"><option value="big">Big bubble</option><option value="small">Small bubble</option></select><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg></div></div>
+                                <div class="control-group"><label for="bgSelect">Background</label><div class="select-wrap"><select id="bgSelect"><option value="white">White</option><option value="transparent">Transparent</option></select><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg></div></div>
+                            </div>
+                            <div class="control-row">
+                                <div class="control-group"><label for="fontSelect">Font</label><div class="select-wrap"><select id="fontSelect"><option value="Arial">Arial</option><option value="Impact">Impact</option><option value="Georgia">Georgia</option><option value="Courier New">Courier</option><option value="Comic Sans MS">Comic Sans</option></select><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg></div></div>
+                                <div class="control-group"><label for="colorPicker">Text color</label><input type="color" id="colorPicker" value="#202820"></div>
+                            </div>
+                            <div class="control-group size-group"><div class="field-heading"><label for="fontSizeSlider">Text size</label><output id="fontSizeValue" for="fontSizeSlider">100%</output></div><input type="range" id="fontSizeSlider" min="0.5" max="2" step="0.05" value="1"></div>
+                            <div class="settings-footer"><button id="resetStyleBtn" class="text-button" type="button">Reset style</button></div>
+                        </div>
+                    </details>
+                    <div class="export-section">
+                        <div class="export-actions">
+                            <button id="downloadBtn" class="button button-primary" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#icon-download"/></svg><span>Save image</span></button>
+                            <button id="shareBtn" class="button button-secondary" type="button" aria-label="Share image" title="Share image" disabled hidden><svg class="icon" aria-hidden="true"><use href="#icon-share"/></svg><span>Share</span></button>
+                            <button id="copyBtn" class="button button-secondary" type="button" aria-label="Copy image" title="Copy image" disabled hidden><svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg></button>
+                        </div>
+                    </div>
+                </section>
             </div>
-            
-            <div class="control-row">
-                <div class="control-group">
-                    <label for="fontSelect">Font:</label>
-                    <select id="fontSelect">
-                        <option value="Arial">Arial</option>
-                        <option value="Courier New">Courier</option>
-                        <option value="Georgia">Georgia</option>
-                        <option value="Impact">Impact</option>
-                        <option value="Comic Sans MS">Comic Sans</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label for="colorPicker">Text Color:</label>
-                    <input type="color" id="colorPicker" value="#000000">
-                </div>
-
-                <div class="control-group">
-                    <label for="fontSizeSlider">Font Size:</label>
-                    <input type="range" id="fontSizeSlider" min="0.5" max="2.0" step="0.1" value="1.0">
-                </div>
-            </div>
-
-            <div class="control-row">
-                <div class="control-group">
-                    <label for="bgSelect">Background:</label>
-                    <select id="bgSelect">
-                        <option value="white">White Background</option>
-                        <option value="transparent">Transparent Background</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="signSelect">Sign Material:</label>
-                    <select id="signSelect">
-                        <option value="white">White Sign</option>
-                        <option value="cardboard">Cardboard Sign</option>
-                    </select>
-                </div>
-            </div>
-
-            <button id="downloadBtn">Download Image</button>
-            <button id="copyBtn">Copy Image</button>
-        </div>
-
-        <div class="canvas-container">
-            <canvas id="signCanvas"></canvas>
-        </div>
-    </main>
-
-    <script src="script.js"></script>
+        </main>
+        <footer class="page-footer"><a href="https://recordsb.github.io/cc/">RecordSB</a></footer>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="previewDialog" class="preview-dialog" aria-labelledby="dialogTitle">
+        <div class="dialog-header"><h2 id="dialogTitle">Preview</h2><button id="closePreviewBtn" class="icon-button" type="button" aria-label="Close preview"><svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg></button></div>
+        <div class="dialog-image-wrap"><img id="fullPreview" alt="Full-size image preview"></div>
+    </dialog>
+    <noscript><p class="noscript-note">Please enable JavaScript to create and save your sign.</p></noscript>
 </body>
 </html>
